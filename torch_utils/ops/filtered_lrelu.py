@@ -10,6 +10,7 @@ import os
 import numpy as np
 import torch
 import warnings
+import traceback
 
 from .. import custom_ops
 from .. import misc
@@ -20,17 +21,35 @@ from . import bias_act
 
 _plugin = None
 
+# def _init():
+#     global _plugin
+#     if _plugin is None:
+#         _plugin = custom_ops.get_plugin(
+#             module_name='filtered_lrelu_plugin',
+#             sources=['filtered_lrelu.cpp', 'filtered_lrelu_wr.cu', 'filtered_lrelu_rd.cu', 'filtered_lrelu_ns.cu'],
+#             headers=['filtered_lrelu.h', 'filtered_lrelu.cu'],
+#             source_dir=os.path.dirname(__file__),
+#             extra_cuda_cflags=['--use_fast_math'],
+#         )
+#     return True
+
+# def _init():
+#     global _plugin
+#     if _plugin is None:
+#         try:
+#             _plugin = custom_ops.get_plugin(
+#                 module_name='bias_act_plugin',
+#                 sources=['bias_act.cpp', 'bias_act.cu'],
+#                 headers=['bias_act.h'],
+#                 source_dir=os.path.dirname(__file__),
+#                 extra_cuda_cflags=['--use_fast_math'],
+#             )
+#         except:
+#             warnings.warn('Failed to build CUDA kernels for bias_act. Falling back to slow reference implementation. Details:\n\n' + traceback.format_exc())
+#     return _plugin is not None
+
 def _init():
-    global _plugin
-    if _plugin is None:
-        _plugin = custom_ops.get_plugin(
-            module_name='filtered_lrelu_plugin',
-            sources=['filtered_lrelu.cpp', 'filtered_lrelu_wr.cu', 'filtered_lrelu_rd.cu', 'filtered_lrelu_ns.cu'],
-            headers=['filtered_lrelu.h', 'filtered_lrelu.cu'],
-            source_dir=os.path.dirname(__file__),
-            extra_cuda_cflags=['--use_fast_math'],
-        )
-    return True
+    return False
 
 def _get_filter_size(f):
     if f is None:
